@@ -1,0 +1,31 @@
+
+{
+    "name": "Complete AI",
+    "description": "Text Autocomplete for ChatGPT",
+    "version": "1.0",
+    "manifest_version": 3,
+    "icons": {
+        "48": "/images/icon.png"
+    },
+    "action": {
+        "default_icon": {
+            "48": "/images/icon.png"
+        }
+      },
+      "permissions": [
+        "contextMenus",
+        "notifications",
+        "storage",
+        "clipboardWrite",
+        "activeTab"
+      ],
+      "background": {
+        "service_worker": "background.js"
+      },
+        "content_scripts": [
+            {
+            "matches": ["https://chat.openai.com/chat/*"],
+            "js": ["content.js"]
+            }
+        ]
+}
