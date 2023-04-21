@@ -1,66 +1,17 @@
 var textArea = document.querySelector('textarea[tabindex="0"]');
 
+
 console.log(textArea)
 
-// document.addEventListener('DOMContentLoaded', function() {
-//     // Get the text area element by using its tabindex attribute
-//     textArea.value = "Can you please let us know more details about your";
-  
-//     setTimeout(function(){
-//         if(textArea.value == ""){
-//             textArea.value = "Can you please let us know more details about your"
-//             console.log("I'm here")
-//         }
-//     }, 5000);
+// Create a new span element
+const suggestion = document.createElement('span');
+suggestion.setAttribute('id', 'suggestion');
 
-    
-    
-    
-//     textArea.addEventListener("input", function() {
-//       console.log(textArea.value);
-//         query({"inputs": textArea.value}).then((response) => {
-//             textArea.placeholder = JSON.stringify(response);
-//             console.log(JSON.stringify(response));
-//         }
-//       )
-      
-//     })
-// })
+textArea.parentNode.appendChild(suggestion);
 
-textArea.insertAdjacentHTML('afterend', '<span id="suggestion"></span>');
-
-
-
-let words = [
-  "Apple",
-  "Pencil",
-  "Pen",
-  "Chair",
-  "Helmet",
-  "Grapes",
-  "Tub",
-  "Trophy",
-  "Cookie",
-  "Donut",
-  "Shirt",
-  "Bat",
-  "Ash",
-  "Bell",
-  "Chat",
-  "Ball",
-  "Eye",
-  "Fish",
-  "Zip",
-  "Game",
-  "Juice",
-  "Orange",
-  "Fan",
-  "Ice",
-];
-words.sort();
-
-
-const suggestion = document.getElementById('suggestion');
+if(textArea.value.length == 0){
+  suggestion.value = "";
+}
 
 suggestion.style = `
     width: inherit;
@@ -80,68 +31,71 @@ textArea.style = `
   z-index: 3;
 `
 
-//Enter key code
+
+
 const enterKey = 9;
 window.onload = () => {
   textArea.value = "";
   clearSuggestion();
 };
 const clearSuggestion = () => {
-  suggestion.innerHTML = "";
+  suggestion.textContent = "";
 };
-//Execute function on input
+
 textArea.addEventListener("input", (e) => {
   clearSuggestion();
-  if(textArea.value != ""){
-    setTimeout(function(){
-      printMessage();
+  if(textArea.value.length > 0){
+    setTimeout(async function(){
+      await printMessage();
     }, 3000); 
   }
-
-  
+  else{
+    clearSuggestion();
+  }
 });
 //Complete predictive text on enter key
 textArea.addEventListener("keydown", (e) => {
   //When user presses enter and suggestion exists
   if (e.keyCode == enterKey && suggestion.innerText != "") {
     e.preventDefault();
-    textArea.value = suggestion.innerText;
+    const tabLabel = suggestion.querySelector('#tab-label');
+    tabLabel.remove();
+    textArea.value = suggestion.textContent;
+    ;
     //clear the suggestion
+    clearSuggestion();
+  }
+  else if (e.keyCode == 13){
     clearSuggestion();
   }
 });
 
 
 
-
-function truncateString(s) {
-  // Find the index of the first occurrence of any punctuation mark
-  var end = Math.min(s.indexOf('.'), s.indexOf(','), s.indexOf('?'), 10);
-
-  // Slice the string up to the punctuation mark (or the end of the string)
-  return s.slice(0, end);
-}
-
-
-
-
-
 function printMessage() {
     //console.log(textArea.value);
-    if(textArea.value == ""){
+    if(textArea.value.length === 0){
       return;
     }
       query({"inputs": textArea.value, "parameters": {"max_length": 20}}).then((response) => {
+        if(response.error){
+          console.log(response.error);
+        }
         let generatedText = response[0].generated_text;
-        suggestion.innerHTML = generatedText;
+        suggestion.innerHTML = textArea.value + generatedText.replace("\n", " ").substring(textArea.value.length).trim().split(" ")[0] + `<span id="tab-label" style="display: inline-block;
+        background-color: #0078d7;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        text-align: center;
+        padding: 2px 6px;
+        border-radius: 10px;
+        margin-left: 4px;">Tab</span>`;;
       }
-    )
+      );
 }
 
-
-
-
-
+// I want a function that 
 
 async function query(data) {
   const apiKey = "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";
@@ -163,6 +117,16 @@ async function query(data) {
 }
 
 
-// query({"inputs": "Can you please let us know more details about your "}).then((response) => {
-// 	console.log(JSON.stringify(response));
-// });
+
+chrome.runtime.sendMessage({requestApiKey: true}, function(response) {
+  var apiKey = response.apiKey;
+  // Use the API key here
+  console.log(apiKey);
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.submitClicked) {
+    // Perform the desired action here
+    console.log('Submit button clicked!');
+  }
+});

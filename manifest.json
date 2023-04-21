@@ -8,24 +8,25 @@
         "48": "/images/icon.png"
     },
     "action": {
+      "default_popup": "popup.html",
         "default_icon": {
             "48": "/images/icon.png"
         }
-      },
-      "permissions": [
-        "contextMenus",
-        "notifications",
-        "storage",
-        "clipboardWrite",
-        "activeTab"
-      ],
-      "background": {
-        "service_worker": "background.js"
-      },
-        "content_scripts": [
-            {
-            "matches": ["https://chat.openai.com/chat/*"],
-            "js": ["content.js"]
-            }
-        ]
+    },
+    "permissions": [
+      "contextMenus",
+      "notifications",
+      "storage",
+      "clipboardWrite",
+      "activeTab"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+      "content_scripts": [
+          {
+          "matches": ["https://chat.openai.com/*", "https://chat.openai.com/c/*"],
+          "js": ["content.js"]
+          }
+      ]
 }
