@@ -31,8 +31,6 @@ textArea.style = `
   z-index: 3;
 `
 
-
-
 const enterKey = 9;
 window.onload = () => {
   textArea.value = "";
@@ -79,7 +77,6 @@ textArea.addEventListener("keydown", (e) => {
     clearSuggestion();
   }
 });
-
 
 
 function printMessage(apiKey) {
