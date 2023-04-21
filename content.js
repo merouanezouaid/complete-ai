@@ -42,11 +42,21 @@ const clearSuggestion = () => {
   suggestion.textContent = "";
 };
 
+
+let API_KEY = null;
+
+chrome.runtime.sendMessage({requestApiKey: true}, function(response) {
+  var apiKey = response.apiKey;
+  // Use the API key here
+  API_KEY = apiKey;
+});
+
+
 textArea.addEventListener("input", (e) => {
   clearSuggestion();
   if(textArea.value.length > 0){
     setTimeout(async function(){
-      await printMessage();
+      await printMessage(API_KEY);
     }, 3000); 
   }
   else{
@@ -72,12 +82,12 @@ textArea.addEventListener("keydown", (e) => {
 
 
 
-function printMessage() {
+function printMessage(apiKey) {
     //console.log(textArea.value);
     if(textArea.value.length === 0){
       return;
     }
-      query({"inputs": textArea.value, "parameters": {"max_length": 20}}).then((response) => {
+      query({"inputs": textArea.value, "parameters": {"max_length": 20}}, apiKey).then((response) => {
         if(response.error){
           console.log(response.error);
         }
@@ -97,8 +107,8 @@ function printMessage() {
 
 // I want a function that 
 
-async function query(data) {
-  const apiKey = "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";
+async function query(data, apiKey) {
+  // const apiKey = "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";
   try {
       const response = await fetch(
           "https://api-inference.huggingface.co/models/gpt2",
@@ -117,16 +127,3 @@ async function query(data) {
 }
 
 
-
-chrome.runtime.sendMessage({requestApiKey: true}, function(response) {
-  var apiKey = response.apiKey;
-  // Use the API key here
-  console.log(apiKey);
-});
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.submitClicked) {
-    // Perform the desired action here
-    console.log('Submit button clicked!');
-  }
-});
