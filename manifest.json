@@ -2,7 +2,7 @@
 {
     "name": "Complete AI",
     "description": "Text Autocomplete for ChatGPT",
-    "version": "1.0",
+    "version": "0.1",
     "manifest_version": 3,
     "icons": {
         "48": "/images/icon.png"
@@ -14,11 +14,7 @@
         }
     },
     "permissions": [
-      "contextMenus",
-      "notifications",
-      "storage",
-      "clipboardWrite",
-      "activeTab"
+      "storage"
     ],
     "background": {
       "service_worker": "background.js"

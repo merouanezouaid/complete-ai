@@ -55,7 +55,8 @@ textArea.addEventListener("input", (e) => {
   if(textArea.value.length > 0){
     setTimeout(async function(){
       await printMessage(API_KEY);
-    }, 3000); 
+    }, 3000);
+
   }
   else{
     clearSuggestion();
@@ -105,12 +106,13 @@ function printMessage(apiKey) {
 // I want a function that 
 
 async function query(data, apiKey) {
-  // const apiKey = "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";
+  const alternative = "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";
+  
   try {
       const response = await fetch(
           "https://api-inference.huggingface.co/models/gpt2",
           {
-              headers: { Authorization: `Bearer ${apiKey}` },
+              headers: { Authorization: `Bearer ${apiKey !== null ? apiKey : alternative}` },
               method: "POST",
               body: JSON.stringify(data),
           }

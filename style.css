@@ -1,0 +1,14 @@
+body {
+padding: 20px;
+} 
+
+
+.btn {
+    display: block;
+    margin: 0 auto;
+    margin-top: 10px;;
+}
+
+.form-control {
+    width: auto !important
+}
